@@ -221,7 +221,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!sections) throw new Error('No data returned from page.');
 
       const patentId = sections.patent_id || 'patent';
-      const patentNum = (patentId.match(/\d+/) || [patentId])[0];
+      // Sanitize the full patent/application number for use as a filename
+      const patentNum = patentId.replace(/[^A-Za-z0-9_\-]/g, '_');
 
       // Build combined markdown
       const sectionBlocks = [
