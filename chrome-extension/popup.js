@@ -104,7 +104,8 @@ function extractPatentData() {
   if (idMeta) result.patent_id = idMeta.getAttribute('content').trim();
 
   // Abstract
-  let abstractEl = document.querySelector('div.abstract');
+  let abstractEl = document.querySelector('.abstract.patent-text') ||
+                   document.querySelector('div.abstract');
   if (!abstractEl) {
     for (const h of document.querySelectorAll('h1,h2,h3,h4')) {
       if (/^\s*abstract\s*$/i.test(h.textContent.trim())) {
@@ -116,7 +117,7 @@ function extractPatentData() {
   if (abstractEl) result.abstract = blockAwareText(abstractEl);
 
   // Description (contains field, background, brief desc, detailed desc)
-  const descEl = document.querySelector('div.description') ||
+  const descEl = document.querySelector('.description.patent-text') ||
                  document.querySelector('[itemprop="description"]');
   if (descEl) {
     const dt = blockAwareText(descEl);
@@ -144,7 +145,8 @@ function extractPatentData() {
   }
 
   // Claims
-  let claimsEl = document.querySelector('div.claims') ||
+  let claimsEl = document.querySelector('.claims.patent-text') ||
+                 document.querySelector('div.claims') ||
                  document.querySelector('[itemprop="claims"]');
   if (!claimsEl) {
     for (const h of document.querySelectorAll('h1,h2,h3,h4')) {
@@ -156,33 +158,31 @@ function extractPatentData() {
   }
   if (claimsEl) result.claims = blockAwareText(claimsEl);
 
-  // Fallback: plain text extraction if structured divs weren't found
-  if (!result.abstract && !result.claims) {
-    const full = document.body ? document.body.innerText : '';
-    if (!result.abstract)
-      result.abstract = extractSubsection(full,
-        ['Abstract'], ['Description', 'Claims', 'Images', 'Classifications']);
-    if (!result.field_of_invention)
-      result.field_of_invention = extractSubsection(full,
-        ['TECHNICAL FIELD', 'FIELD OF THE INVENTION', 'FIELD OF INVENTION'],
-        ['BACKGROUND', 'SUMMARY', 'BRIEF DESCRIPTION']);
-    if (!result.background)
-      result.background = extractSubsection(full,
-        ['BACKGROUND'], ['SUMMARY', 'BRIEF DESCRIPTION', 'DETAILED DESCRIPTION']);
-    if (!result.brief_description_of_drawings)
-      result.brief_description_of_drawings = extractSubsection(full,
-        ['BRIEF DESCRIPTION OF THE DRAWINGS', 'BRIEF DESCRIPTION OF DRAWINGS'],
-        ['DETAILED DESCRIPTION', 'DESCRIPTION OF THE PREFERRED']);
-    if (!result.detailed_description)
-      result.detailed_description = extractSubsection(full,
-        ['DETAILED DESCRIPTION', 'DETAILED DESCRIPTION OF THE INVENTION',
-         'DETAILED DESCRIPTION OF THE PREFERRED EMBODIMENTS',
-         'DESCRIPTION OF THE PREFERRED EMBODIMENTS'],
-        ['CLAIMS', 'What is claimed is:', 'What is claimed:']);
-    if (!result.claims)
-      result.claims = extractSubsection(full,
-        ['Claims'], ['Description', 'Referenced by', 'Patent Citations']);
-  }
+  // Fallback: plain text extraction for any field not yet populated
+  const fullText = document.body ? document.body.innerText : '';
+  if (!result.abstract)
+    result.abstract = extractSubsection(fullText,
+      ['Abstract'], ['Description', 'Claims', 'Images', 'Classifications']);
+  if (!result.field_of_invention)
+    result.field_of_invention = extractSubsection(fullText,
+      ['TECHNICAL FIELD', 'FIELD OF THE INVENTION', 'FIELD OF INVENTION'],
+      ['BACKGROUND', 'SUMMARY', 'BRIEF DESCRIPTION']);
+  if (!result.background)
+    result.background = extractSubsection(fullText,
+      ['BACKGROUND'], ['SUMMARY', 'BRIEF DESCRIPTION', 'DETAILED DESCRIPTION']);
+  if (!result.brief_description_of_drawings)
+    result.brief_description_of_drawings = extractSubsection(fullText,
+      ['BRIEF DESCRIPTION OF THE DRAWINGS', 'BRIEF DESCRIPTION OF DRAWINGS'],
+      ['DETAILED DESCRIPTION', 'DESCRIPTION OF THE PREFERRED']);
+  if (!result.detailed_description)
+    result.detailed_description = extractSubsection(fullText,
+      ['DETAILED DESCRIPTION', 'DETAILED DESCRIPTION OF THE INVENTION',
+       'DETAILED DESCRIPTION OF THE PREFERRED EMBODIMENTS',
+       'DESCRIPTION OF THE PREFERRED EMBODIMENTS'],
+      ['CLAIMS', 'What is claimed is:', 'What is claimed:']);
+  if (!result.claims)
+    result.claims = extractSubsection(fullText,
+      ['Claims'], ['Description', 'Referenced by', 'Patent Citations']);
 
   return result;
 }
