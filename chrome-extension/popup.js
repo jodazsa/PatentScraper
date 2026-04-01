@@ -235,36 +235,35 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Sanitize the full patent/application number for use as a filename
       const patentNum = patentId.replace(/[^A-Za-z0-9_\-]/g, '_');
 
-      // Build combined markdown
+      // Build combined plain text
       const sectionBlocks = [
-        ['Abstract',                      sections.abstract],
-        ['Field of Invention',            sections.field_of_invention],
-        ['Background',                    sections.background],
-        ['Brief Description of Drawings', sections.brief_description_of_drawings],
-        ['Detailed Description',          sections.detailed_description],
-        ['Claims',                        sections.claims],
+        ['ABSTRACT',                        sections.abstract],
+        ['FIELD OF INVENTION',              sections.field_of_invention],
+        ['BACKGROUND',                      sections.background],
+        ['BRIEF DESCRIPTION OF DRAWINGS',   sections.brief_description_of_drawings],
+        ['DETAILED DESCRIPTION',            sections.detailed_description],
+        ['CLAIMS',                          sections.claims],
       ];
 
-      let md = `# ${sections.title || patentId}\n\n`;
-      md += `**Patent ID:** ${patentId}\n\n`;
-      md += `---\n\n`;
+      let txt = `${sections.title || patentId}\n`;
+      txt += `Patent ID: ${patentId}\n\n`;
       for (const [heading, body] of sectionBlocks) {
-        md += `## ${heading}\n\n`;
-        md += (body ? body : '*Section not found in the patent document.*') + '\n\n';
+        txt += `${heading}\n\n`;
+        txt += (body ? body : 'Section not found in the patent document.') + '\n\n';
       }
 
       // Trigger download
-      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `patent_${patentNum}.md`;
+      a.download = `patent_${patentNum}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      setStatus(`Saved: patent_${patentNum}.md`, 'success');
+      setStatus(`Saved: patent_${patentNum}.txt`, 'success');
     } catch (err) {
       setStatus(`Error: ${err.message}`, 'error');
     } finally {
