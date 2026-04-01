@@ -99,9 +99,20 @@ function extractPatentData() {
     if (h1) result.title = h1.textContent.trim();
   }
 
-  // Patent ID
+  // Patent ID (three-source cascade)
   const idMeta = document.querySelector('meta[name="DC.identifier"]');
-  if (idMeta) result.patent_id = idMeta.getAttribute('content').trim();
+  if (idMeta) {
+    result.patent_id = idMeta.getAttribute('content').trim();
+  } else {
+    const pubnumEl = document.querySelector('#pubnum') ||
+                     document.querySelector('[data-proto="PublicationNumber"]');
+    if (pubnumEl) {
+      result.patent_id = pubnumEl.textContent.trim();
+    } else {
+      const m = window.location.pathname.match(/\/patent\/([^/]+)/);
+      if (m) result.patent_id = m[1];
+    }
+  }
 
   // Abstract
   let abstractEl = document.querySelector('.abstract.patent-text') ||
