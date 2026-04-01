@@ -5,8 +5,10 @@
   "description": "Download the current Google Patents page as a combined Markdown file.",
   "permissions": ["activeTab", "scripting"],
   "host_permissions": ["https://patents.google.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
-    "default_popup": "popup.html",
     "default_title": "Download Patent as Markdown"
   }
 }
