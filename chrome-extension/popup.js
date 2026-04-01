@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       ];
 
       let txt = `${sections.title || patentId}\n`;
-      txt += `Patent ID: ${patentId}\n\n`;
+      txt += `ID: ${patentId}\n\n`;
       for (const [heading, body] of sectionBlocks) {
         txt += `${heading}\n\n`;
         txt += (body ? body : 'Section not found in the patent document.') + '\n\n';
@@ -257,13 +257,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `patent_${patentNum}.txt`;
+      a.download = `${patentNum}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      setStatus(`Saved: patent_${patentNum}.txt`, 'success');
+      setStatus(`Saved: ${patentNum}.txt`, 'success');
     } catch (err) {
       setStatus(`Error: ${err.message}`, 'error');
     } finally {
