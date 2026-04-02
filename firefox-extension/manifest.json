@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "Patent to Markdown",
+  "version": "1.0",
+  "description": "Download the current Google Patents page as a combined Markdown file.",
+  "permissions": ["activeTab", "https://patents.google.com/*"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "patent-to-markdown@patscraper",
+      "strict_min_version": "109.0"
+    }
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Download Patent as Markdown"
+  }
+}
