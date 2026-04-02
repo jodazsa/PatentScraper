@@ -34,15 +34,13 @@ ExtractPatent() {
     ; Grab URL from the active browser window
     url := GetBrowserURL()
     if !url {
-        MsgBox("Could not read the browser URL.`nMake sure Chrome or Edge is the active window.",
-               "Patent Scraper", "Icon!")
+        MsgBox("Could not read the browser URL.`nMake sure Chrome or Edge is the active window.", "Patent Scraper", "Icon!")
         return
     }
 
     ; Confirm this is a Google Patents page
     if !RegExMatch(url, "i)patents\.google\.com/patent/") {
-        MsgBox("Please navigate to a Google Patents page first.`n`nCurrent URL:`n" url,
-               "Patent Scraper", "Icon!")
+        MsgBox("Please navigate to a Google Patents page first.`n`nCurrent URL:`n" url, "Patent Scraper", "Icon!")
         return
     }
 
