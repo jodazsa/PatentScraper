@@ -64,7 +64,6 @@ ExtractPatent() {
         fh.Close()
 
         TrayTip("Saved: patent_" safeId ".txt", "Patent Scraper", 1)
-        MsgBox("Patent saved successfully!`n`n" outFile, "Patent Scraper", "Iconi")
 
     } catch Error as e {
         MsgBox("Error: " e.Message, "Patent Scraper", "Icon!")
